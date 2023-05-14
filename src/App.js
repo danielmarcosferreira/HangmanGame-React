@@ -1,6 +1,7 @@
 import "./App.css";
 import styled from "styled-components";
 import GlobalStyle from "./globalStyle";
+import palavras from "./palavras";
 import hangmanImg from "./images/forca0.png";
 import hangmanImg1 from "./images/forca1.png";
 import hangmanImg2 from "./images/forca2.png";
@@ -8,48 +9,95 @@ import hangmanImg3 from "./images/forca3.png";
 import hangmanImg4 from "./images/forca4.png";
 import hangmanImg5 from "./images/forca5.png";
 import hangmanImg6 from "./images/forca6.png";
+import { useState } from "react";
 
 function App() {
+  const [botaoClicado, setBotaoClicado] = useState(false);
+  const [tracejado, setTracejado] = useState("")
+
+  const alfabeto = [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z",
+  ];
+
+  <palavras />;
+  let palavraSeparada = [];
+  let tracejada = [];
+
+  function sortearPalavras() {
+    const indiceAleatorio = Math.floor(Math.random() * palavras.length);
+    const palavraAleatoria = palavras[indiceAleatorio];
+    setBotaoClicado(true);
+    palavraSeparada = palavraAleatoria.split("").map((letra) => `${letra}`);
+    colocandoTracos(palavraSeparada);
+    mostrarPalavra(palavraSeparada)
+  }
+
+  function colocandoTracos(palavra) {
+    console.log(palavra);
+    tracejada = palavraSeparada.map((letra) => "_");
+    console.log(tracejada);
+  }
+
+  function mostrarPalavra (array) {
+    const novoArray = palavraSeparada.map((letra) => "_")
+    setTracejado(novoArray)
+  }
+
+  function verificaLetra(l) {
+    console.log(l);
+    console.log(palavraSeparada);
+    if (palavraSeparada.includes(l)) {
+      console.log("Contem!!!");
+    }
+  }
+
   return (
     <>
-      <GlobalStyle/>
+      <GlobalStyle />
       <Container>
         <Main>
           <img src={hangmanImg} alt="Imagem da forca do jogo" />
           <RightSide>
-            <button>Escolher Palavra</button>
-            <h4>_ _ _ _ _ _ _ _ _ _ _ _</h4>
+            <button onClick={sortearPalavras} disabled={botaoClicado}>
+              Escolher Palavra
+            </button>
+            <h4>{tracejado}</h4>
           </RightSide>
         </Main>
         <Footer>
           <Letters>
-            <p>A</p>
-            <p>B</p>
-            <p>C</p>
-            <p>D</p>
-            <p>E</p>
-            <p>F</p>
-            <p>G</p>
-            <p>H</p>
-            <p>I</p>
-            <p>J</p>
-            <p>K</p>
-            <p>L</p>
-            <p>M</p>
-            
-            <p>N</p>
-            <p>O</p>
-            <p>P</p>
-            <p>Q</p>
-            <p>R</p>
-            <p>S</p>
-            <p>T</p>
-            <p>U</p>
-            <p>V</p>
-            <p>W</p>
-            <p>X</p>
-            <p>Y</p>
-            <p>Z</p>
+            {alfabeto.map((l, index) => {
+              return (
+                <li key={index} onClick={() => verificaLetra(l)}>
+                  {l.toUpperCase()}
+                </li>
+              );
+            })}
           </Letters>
         </Footer>
       </Container>
@@ -110,6 +158,15 @@ const RightSide = styled.div`
     background: pink;
     width: 100%;
     font-size: 40px;
+    letter-spacing: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .esconder {
+    display: none;
   }
 `;
 
@@ -117,8 +174,7 @@ const Letters = styled.div`
   display: flex;
   flex-wrap: wrap;
 
-
-  p {
+  li {
     background: #e1ecf4;
     font-weight: bold;
     color: #053e64;
@@ -139,7 +195,7 @@ const Letters = styled.div`
 
 const Footer = styled.div`
   background-color: antiquewhite;
-  max-width: 80%;
+  max-width: 63%;
 
   display: flex;
   justify-content: center;
@@ -160,7 +216,7 @@ const Guess = styled.div`
     justify-content: center;
   }
   button {
-    background: #C8DDF2;
+    background: #c8ddf2;
     color: #053e64;
     display: inline-block;
     width: 80px;
