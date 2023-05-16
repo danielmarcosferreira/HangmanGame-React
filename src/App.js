@@ -2,19 +2,18 @@ import "./App.css";
 import styled from "styled-components";
 import GlobalStyle from "./globalStyle";
 import palavras from "./palavras";
-import hangmanImg from "./images/forca0.png";
-import hangmanImg1 from "./images/forca1.png";
-import hangmanImg2 from "./images/forca2.png";
-import hangmanImg3 from "./images/forca3.png";
-import hangmanImg4 from "./images/forca4.png";
-import hangmanImg5 from "./images/forca5.png";
-import hangmanImg6 from "./images/forca6.png";
+import imagem from "./images/forca0.png";
+import imagem1 from "./images/forca1.png";
+import imagem2 from "./images/forca2.png";
+import imagem3 from "./images/forca3.png";
+import imagem4 from "./images/forca4.png";
+import imagem5 from "./images/forca5.png";
+import imagem6 from "./images/forca6.png";
 import { useState } from "react";
 
-function App() {
-  const [botaoClicado, setBotaoClicado] = useState(false);
-  const [tracejado, setTracejado] = useState("")
+let imagemForca = [imagem, imagem1, imagem2, imagem3, imagem4, imagem5, imagem6]
 
+  let palavraSeparada = [];
   const alfabeto = [
     "a",
     "b",
@@ -44,13 +43,25 @@ function App() {
     "z",
   ];
 
-  <palavras />;
-  let palavraSeparada = [];
-  let tracejada = [];
+  let contador = 0;
 
+
+function App() {
+  const [botaoClicado, setBotaoClicado] = useState(false);
+  let [tracejada, setTracejado] = useState([])
+  const [image, setImage] = useState(imagemForca)
+
+  const [palavra, setPalavra] = useState([])
+
+  const [corDaLetra, setCorDaLetra] = useState()
+
+  const arrDePalavras = palavras;
+
+  let ativo;
+  
   function sortearPalavras() {
-    const indiceAleatorio = Math.floor(Math.random() * palavras.length);
-    const palavraAleatoria = palavras[indiceAleatorio];
+    const indiceAleatorio = Math.floor(Math.random() * arrDePalavras.length);
+    const palavraAleatoria = arrDePalavras[indiceAleatorio];
     setBotaoClicado(true);
     palavraSeparada = palavraAleatoria.split("").map((letra) => `${letra}`);
     colocandoTracos(palavraSeparada);
@@ -59,21 +70,50 @@ function App() {
 
   function colocandoTracos(palavra) {
     console.log(palavra);
-    tracejada = palavraSeparada.map((letra) => "_");
+    tracejada = palavraSeparada.map((letra) => " _ ");
     console.log(tracejada);
   }
 
   function mostrarPalavra (array) {
-    const novoArray = palavraSeparada.map((letra) => "_")
+    const novoArray = tracejada
     setTracejado(novoArray)
   }
 
   function verificaLetra(l) {
-    console.log(l);
-    console.log(palavraSeparada);
     if (palavraSeparada.includes(l)) {
-      console.log("Contem!!!");
+      palavraSeparada.map((letra, idx) => {
+        if (letra === l) {
+          setCorDaLetra(true)
+          mostrarLetra(l, idx)
+        }
+      })
+    } else {
+      ativo = "red"
+      console.log("Errou!")
+      mostrarImagem()
+      setCorDaLetra(false)
+      
+      // console.log(ativo)
+      // contador = contador + 1;
+      // setImage(image[contador])
+      // console.log(contador)
+    } 
+  }
+
+  function mostrarLetra(l, idx) {
+    
+    let posicao = tracejada[idx] = l
+    // setTracejado(posicao)
+    console.log(l, idx)
+    console.log(tracejada)
+    console.log(palavraSeparada)
+    if (tracejada === palavraSeparada) {
+      console.log("voce terminou")
     }
+  }
+
+  function mostrarImagem() {
+    return image[contador]
   }
 
   return (
@@ -81,12 +121,12 @@ function App() {
       <GlobalStyle />
       <Container>
         <Main>
-          <img src={hangmanImg} alt="Imagem da forca do jogo" />
+          <img src={mostrarImagem()} alt="Imagem da forca do jogo" />
           <RightSide>
             <button onClick={sortearPalavras} disabled={botaoClicado}>
               Escolher Palavra
             </button>
-            <h4>{tracejado}</h4>
+            <h4>{tracejada}</h4>
           </RightSide>
         </Main>
         <Footer>
@@ -190,6 +230,14 @@ const Letters = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .red {
+    background: red;
+  }
+
+  .green {
+    background: green;
   }
 `;
 
